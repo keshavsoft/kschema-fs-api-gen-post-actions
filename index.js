@@ -23,9 +23,7 @@ const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath }) => {
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
-        toPath,
-        cmd: "WithMail",
-        toConfigPath, inTargetPath
+        toPath, cmd: commandToSend, toConfigPath, inTargetPath
     });
 };
 
