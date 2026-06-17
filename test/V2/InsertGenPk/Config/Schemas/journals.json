@@ -1,0 +1,97 @@
+{
+  "tableName": "journals",
+  "columns": [
+    {
+      "field": "idno11",
+      "title": "idno11",
+      "unique": true,
+      "isInput": true,
+      "isConsider": true
+    },
+    {
+      "field": "idno1",
+      "title": "idno1",
+      "isConsider": true
+    },
+    {
+      "field": "acc_cod11",
+      "title": "acc_cod11",
+      "isConsider": true
+    },
+    {
+      "field": "Description",
+      "title": "Description",
+      "isConsider": true
+    },
+    {
+      "field": "amt",
+      "title": "amt",
+      "isConsider": true
+    },
+    {
+      "field": "Date",
+      "title": "Date",
+      "isConsider": true
+    },
+    {
+      "field": "AccountName",
+      "title": "AccountName",
+      "isConsider": true
+    },
+    {
+      "field": "VoucherName",
+      "title": "VoucherName",
+      "isConsider": true
+    },
+    {
+      "field": "ParentVoucherName",
+      "title": "ParentVoucherName",
+      "isConsider": true
+    },
+    {
+      "field": "nam7",
+      "title": "nam7",
+      "isConsider": true
+    },
+    {
+      "field": "Credit",
+      "title": "Credit",
+      "isConsider": true
+    },
+    {
+      "field": "Debit",
+      "title": "Debit",
+      "isConsider": true
+    }
+  ],
+  "data": [],
+  "Vertical": [],
+  "DataTableOptions": {
+    "Header": {
+      "autoFocus": "LedgerName"
+    }
+  },
+  "NonSecured": {
+    "SubRoutes": [
+      "ShowAll",
+      "Insert",
+      "Pipe"
+    ]
+  },
+  "PrimarykeyTableNames": [],
+  "PrimarykeyTables": [],
+  "columnsConfig": [
+    {
+      "columnName": "AccountName",
+      "cellConfig": {
+        "width": "150px"
+      },
+      "isSearchable": false,
+      "dataListSource": "Dates.Date",
+      "isConsider": true,
+      "field": "AccountName",
+      "title": "AccountName",
+      "defaultValue": "KeshavSoft"
+    }
+  ]
+}

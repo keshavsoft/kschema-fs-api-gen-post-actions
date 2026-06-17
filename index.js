@@ -17,14 +17,15 @@ const withMail = async ({ toPath }) => {
     });
 };
 
-const insertGenPk = async ({ toPath }) => {
+const insertGenPk = async ({ toPath, showLog, toConfigPath }) => {
     const commandToSend = "insertGenPk";
 
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
         toPath,
-        cmd: "WithMail"
+        cmd: "WithMail",
+        toConfigPath
     });
 };
 

@@ -1,19 +1,22 @@
 import path from "path";
 import fixEndpointsJs from "express-fix-any-js";
+import generateRest from "kschema-fs-api-gen-rest";
 
 import { locateSource } from "./InsertGenPk/steps/locateSource.js";
 import { locateDestination } from "./InsertGenPk/steps/locateDestination.js";
 import { createFolder } from "../../core/createFolder.js";
 
 import updateEndPointsJs from "./InsertGenPk/steps/updateEndPointsJs.js";
-import createHttpFile from "./InsertGenPk/steps/createHttpFile.js";
+// import createHttpFile from "./InsertGenPk/steps/createHttpFile.js";
 
 import { announce } from "./InsertGenPk/steps/announce.js";
 
 import resolveFolderName from "./InsertGenPk/steps/resolveFolderName.js";
 import actions from "./InsertGenPk/actions.json" with { type: "json" };
 
-const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreate = true }) => {
+const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreate = true,
+    toConfigPath
+}) => {
 
     const matched = actions;
 
@@ -46,9 +49,14 @@ const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreat
             inCheckLines: matched.endPointsJs
         });
 
-        createHttpFile({
-            inTargetPath: path.join(localToPath, resolvedFolderName),
-            toPath: process.cwd()
+        // createHttpFile({
+        //     inTargetPath: path.join(localToPath, resolvedFolderName),
+        //     toPath: process.cwd()
+        // });
+
+        generateRest({
+            toConfigPath,
+            toPath: path.join(localToPath, resolvedFolderName),
         });
     };
 

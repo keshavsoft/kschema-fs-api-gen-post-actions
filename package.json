@@ -10,7 +10,8 @@
     "project-generator"
   ],
   "dependencies": {
-    "express-fix-any-js": "^1.2.3"
+    "express-fix-any-js": "^1.2.3",
+    "kschema-fs-api-gen-rest": "^1.3.2"
   },
   "type": "module",
   "exports": {
