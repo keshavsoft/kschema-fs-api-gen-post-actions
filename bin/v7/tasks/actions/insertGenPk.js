@@ -7,7 +7,6 @@ import { locateDestination } from "./InsertGenPk/steps/locateDestination.js";
 import { createFolder } from "../../core/createFolder.js";
 
 import updateEndPointsJs from "./InsertGenPk/steps/updateEndPointsJs.js";
-// import createHttpFile from "./InsertGenPk/steps/createHttpFile.js";
 
 import { announce } from "./InsertGenPk/steps/announce.js";
 
@@ -15,7 +14,7 @@ import resolveFolderName from "./InsertGenPk/steps/resolveFolderName.js";
 import actions from "./InsertGenPk/actions.json" with { type: "json" };
 
 const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreate = true,
-    toConfigPath
+    toConfigPath, inTargetPath
 }) => {
 
     const matched = actions;
@@ -48,11 +47,6 @@ const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreat
             jsFilePath: path.join(localToPath, "end-points.js"),
             inCheckLines: matched.endPointsJs
         });
-
-        // createHttpFile({
-        //     inTargetPath: path.join(localToPath, resolvedFolderName),
-        //     toPath: process.cwd()
-        // });
 
         generateRest({
             toConfigPath,
