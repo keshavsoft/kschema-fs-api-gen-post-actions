@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export default function resolveFolderName({ name, inDefaultFolderName = "InsertGenPk" }) {
+export default function resolveFolderName({ name, inDefaultFolderName = "WithMail" }) {
     const defaultFolderName = inDefaultFolderName;
 
     // case 1: force new → timestamp
