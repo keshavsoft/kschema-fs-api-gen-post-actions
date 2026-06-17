@@ -6,8 +6,6 @@ import { locateSource } from "./InsertGenPk/steps/locateSource.js";
 import { locateDestination } from "./InsertGenPk/steps/locateDestination.js";
 import { createFolder } from "../../core/createFolder.js";
 
-import updateEndPointsJs from "./InsertGenPk/steps/updateEndPointsJs.js";
-
 import { announce } from "./InsertGenPk/steps/announce.js";
 
 import resolveFolderName from "./InsertGenPk/steps/resolveFolderName.js";
@@ -49,7 +47,7 @@ const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreat
         });
 
         generateRest({
-            toConfigPath,
+            toConfigPath, inTargetPath,
             toPath: path.join(localToPath, resolvedFolderName),
         });
     };
