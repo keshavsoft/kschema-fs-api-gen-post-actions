@@ -1,78 +1,22 @@
 import getLatestVersion from "./bin/core/getLatestVersion.js";
 
 const load = async (cmd) => {
-    const module = await import(`./bin/${getLatestVersion()}/commands/loadCommand.js`);
+    const module = await import(`./bin/${getLatestVersion()}/tasks/actions/${cmd}.js`);
 
-    return module.default(cmd); // Returns a function
-};
-
-const insertGenPk = async ({ toPath }) => {
-    const commandToSend = "InsertGenPk";
-
-    const commandFunction = await load(commandToSend);
-    // console.log("  ...args :", args);
-    await commandFunction({
-        toPath,
-        cmd: commandToSend
-    });
+    return module.default; // Returns a function
 };
 
 const withMail = async ({ toPath }) => {
-    const commandToSend = "WithMail";
+    const commandToSend = "withMail";
 
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
         toPath,
-        cmd: commandToSend
-    });
-};
-
-const showAll = async ({ toPath }) => {
-    const commandToSend = "ShowAll";
-
-    const commandFunction = await load(commandToSend);
-    // console.log("  ...args :", args);
-    await commandFunction({
-        toPath,
-        cmd: commandToSend
-    });
-};
-
-const insert = async (...args) => {
-    const commandToSend = "Insert";
-
-    const commandFunction = await load(commandToSend);
-
-    await commandFunction({
-        ...args,
-        cmd: commandToSend,
-        toPath: process.cwd()
-    });
-};
-
-const distinct = async (...args) => {
-    const commandToSend = "Distinct";
-
-    const commandFunction = await load(commandToSend);
-
-    await commandFunction({
-        cmd: commandToSend,
-        toPath: process.cwd()
-    });
-};
-
-const alter = async ({ toPath }) => {
-    const commandToSend = "Alter";
-
-    const commandFunction = await load(commandToSend);
-    // console.log("  ...args :", args);
-    await commandFunction({
-        toPath,
-        cmd: commandToSend
+        cmd: "WithMail"
     });
 };
 
 export {
-    showAll, insert, distinct, alter, withMail, insertGenPk
+    withMail
 };
