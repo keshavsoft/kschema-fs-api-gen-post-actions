@@ -92,6 +92,30 @@
       "field": "AccountName",
       "title": "AccountName",
       "defaultValue": "KeshavSoft"
+    },
+    {
+      "columnName": "Date",
+      "cellConfig": {
+        "width": "150px"
+      },
+      "isSearchable": false,
+      "dataListSource": "Dates.Date",
+      "isConsider": false,
+      "field": "Date",
+      "title": "Date",
+      "defaultValue": "KeshavSoft"
+    },
+    {
+      "columnName": "Description",
+      "cellConfig": {
+        "width": "150px"
+      },
+      "isSearchable": false,
+      "dataListSource": "Dates.Date",
+      "isConsider": true,
+      "field": "Description",
+      "title": "Description",
+      "defaultValue": "KeshavSoft"
     }
   ]
 }
