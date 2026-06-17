@@ -17,6 +17,17 @@ const withMail = async ({ toPath }) => {
     });
 };
 
+const insertGenPk = async ({ toPath }) => {
+    const commandToSend = "insertGenPk";
+
+    const commandFunction = await load(commandToSend);
+    // console.log("  ...args :", args);
+    await commandFunction({
+        toPath,
+        cmd: "WithMail"
+    });
+};
+
 export {
-    withMail
+    withMail, insertGenPk
 };
