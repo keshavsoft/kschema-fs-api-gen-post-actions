@@ -1,0 +1,7 @@
+
+POST http://localhost:3000/Api/V1/StockItems/Insert
+Content-Type: application/json
+
+{
+  "StockItemName": "Coke 250 ml"
+}

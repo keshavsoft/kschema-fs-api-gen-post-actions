@@ -1,0 +1,26 @@
+{
+    "cmd": "InsertGenPk",
+    "file": "insertGenPk",
+    "exportFile": "InsertGenPk",
+    "group": "PostMethods",
+    "description": "Generate InsertGenPk POST action",
+    "endPointsJs": {
+        "importLines": {
+            "toInsertLine": "import funcFromWithMail from './InsertGenPk/controller.js';",
+            "duplicationCheck": "from './InsertGenPk/controller.js'",
+            "insertAfter": [
+                "import funcFrom",
+                "import express"
+            ]
+        },
+        "useLines": {
+            "toInsertLine1": "router.get('/InsertGenPk', (req, res) => funcFromInsertGenPk({ res, inTablePath: tablePath }));",
+            "toInsertLine": "router.post('/InsertGenPk', express.json(), (req, res) => funcFromInsertGenPk({ req, res, inTablePath: tablePath, inConfigPath: configPath }));",
+            "duplicationCheck": "router.use('/InsertGenPk'",
+            "insertAfter": [
+                "router.",
+                "const router = "
+            ]
+        }
+    }
+}
