@@ -28,6 +28,17 @@ const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath }) => {
     });
 };
 
+const insertAsIs = async ({ toPath, showLog, toConfigPath, inTargetPath }) => {
+    const commandToSend = "insertAsIs";
+
+    const commandFunction = await load(commandToSend);
+    // console.log("  ...args :", args);
+    await commandFunction({
+        toPath, cmd: commandToSend, toConfigPath, inTargetPath,
+        inFolderName: commandToSend
+    });
+};
+
 export {
-    withMail, insertGenPk
+    withMail, insertGenPk, insertAsIs
 };
