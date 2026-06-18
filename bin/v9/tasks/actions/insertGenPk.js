@@ -13,7 +13,7 @@ import resolveFolderName from "./InsertGenPk/steps/resolveFolderName.js";
 import actions from "./InsertGenPk/actions.json" with { type: "json" };
 
 const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreate = true,
-    toConfigPath, inTargetPath, inFolderName
+    toConfigPath, inTargetPath, inFolderName, inGenerateRest = false
 }) => {
 
     const matched = actions;
@@ -47,10 +47,12 @@ const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreat
             inActionName: cmd, inFolderName, inGetType: "bodyParse"
         });
 
-        generateRest({
-            toConfigPath, inTargetPath,
-            toPath: path.join(localToPath, resolvedFolderName),
-        });
+        if (inGenerateRest) {
+            generateRest({
+                toConfigPath, inTargetPath,
+                toPath: path.join(localToPath, resolvedFolderName),
+            });
+        };
     };
 
     if (isAnnounce) announce({ inResolvedFolderName: resolvedFolderName });

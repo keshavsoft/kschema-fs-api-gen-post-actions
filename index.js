@@ -17,25 +17,25 @@ const withMail = async ({ toPath }) => {
     });
 };
 
-const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath }) => {
+const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateRest }) => {
     const commandToSend = "insertGenPk";
 
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
         toPath, cmd: commandToSend, toConfigPath, inTargetPath,
-        inFolderName: commandToSend
+        inFolderName: commandToSend, inGenerateRest
     });
 };
 
-const insertAsIs = async ({ toPath, showLog, toConfigPath, inTargetPath }) => {
+const insertAsIs = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateRest }) => {
     const commandToSend = "insertAsIs";
 
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
         toPath, cmd: commandToSend, toConfigPath, inTargetPath,
-        inFolderName: commandToSend
+        inFolderName: commandToSend, inGenerateRest
     });
 };
 
