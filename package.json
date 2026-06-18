@@ -1,6 +1,6 @@
 {
   "name": "kschema-fs-api-gen-post-actions",
-  "version": "1.8.3",
+  "version": "1.9.1",
   "description": "start from end points js, generate post methods",
   "keywords": [
     "cli",
@@ -10,9 +10,8 @@
     "project-generator"
   ],
   "dependencies": {
-    "express-fix-any-js": "^1.2.3",
     "kschema-fs-api-gen-rest": "^1.4.2",
-    "express-fix-endpoints-js": "^1.12.3"
+    "express-fix-endpoints-post-js": "^1.2.2"
   },
   "type": "module",
   "exports": {
