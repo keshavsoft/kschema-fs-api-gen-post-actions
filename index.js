@@ -13,7 +13,7 @@ const withMail = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerat
     // console.log("  ...args :", args);
     await commandFunction({
         toPath, cmd: commandToSend, toConfigPath, inTargetPath,
-        inFolderName: commandToSend, inGenerateRest
+        inFolderName: commandToSend, inGenerateRest, showLog
     });
 };
 
