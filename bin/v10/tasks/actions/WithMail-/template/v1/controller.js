@@ -1,16 +1,17 @@
 import { startFunc as Service } from "./service.js";
 import { ConflictError, StorageError } from "./errors.js";
 
-const postFunc = async ({ req, res, inTablePath, inConfigPath }) => {
+const postFunc = async ({ req, res, inTablePath }) => {
     try {
         const inRequestBody = req.body;
 
-        const fromService = await Service({
-            inRequestBody, inTablePath,
-            inConfigPath
-        });
+        const fromService = await Service({ inRequestBody, inTablePath });
 
-        res.type("application/json").send(fromService);
+        if (!fromService) {
+            return res.status(400).send("Validation failed");
+        };
+
+        res.type("text/plain").send(fromService);
     } catch (err) {
 
         if (err instanceof ConflictError)

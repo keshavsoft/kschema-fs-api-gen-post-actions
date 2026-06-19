@@ -1,19 +1,22 @@
 import path from "path";
-
-import generateRest from "kschema-fs-api-gen-rest";
-import fixEndpointsJs from "express-fix-endpoints-post-js";
+import fixEndpointsJs from "express-fix-any-js";
 
 import { locateSource } from "./WithMail/steps/locateSource.js";
 import { locateDestination } from "./WithMail/steps/locateDestination.js";
 import { createFolder } from "../../core/createFolder.js";
 
+import updateEndPointsJs from "./WithMail/steps/updateEndPointsJs.js";
+import createHttpFile from "./WithMail/steps/createHttpFile.js";
+
 import { announce } from "./WithMail/steps/announce.js";
 
 import resolveFolderName from "./WithMail/steps/resolveFolderName.js";
+import actions from "./WithMail/actions.json" with { type: "json" };
 
-const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreate = true,
-    toConfigPath, inTargetPath, inFolderName, inGenerateRest = false
-}) => {
+const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreate = true }) => {
+
+    const matched = actions;
+
     const localToPath = toPath;
 
     const resolvedFolderName = resolveFolderName({
@@ -39,16 +42,14 @@ const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreat
 
     if (createFolderResponse.KTF) {
         const fromEndPointsJs = await fixEndpointsJs({
-            endPointsJsPath: path.join(localToPath, "end-points.js"),
-            inActionName: cmd, inFolderName, inGetType: "bodyParse"
+            jsFilePath: path.join(localToPath, "end-points.js"),
+            inCheckLines: matched.endPointsJs
         });
 
-        if (inGenerateRest) {
-            generateRest({
-                toConfigPath, inTargetPath,
-                toPath: path.join(localToPath, resolvedFolderName),
-            });
-        };
+        createHttpFile({
+            inTargetPath: path.join(localToPath, resolvedFolderName),
+            toPath: process.cwd()
+        });
     };
 
     if (isAnnounce) announce({ inResolvedFolderName: resolvedFolderName });
