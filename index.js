@@ -6,14 +6,14 @@ const load = async (cmd) => {
     return module.default; // Returns a function
 };
 
-const withMail = async ({ toPath }) => {
+const withMail = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateRest }) => {
     const commandToSend = "withMail";
 
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
-        toPath,
-        cmd: "WithMail"
+        toPath, cmd: commandToSend, toConfigPath, inTargetPath,
+        inFolderName: commandToSend, inGenerateRest
     });
 };
 
