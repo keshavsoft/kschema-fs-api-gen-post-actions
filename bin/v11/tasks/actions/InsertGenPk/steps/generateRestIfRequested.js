@@ -8,12 +8,8 @@ export const generateRestIfRequested = ({
     inTargetPath,
     toPath,
     resolvedFolderName,
-    isShowLog
+    isShowLog, inPort
 }) => {
-
-    console.log("inGenerateRest : ", inGenerateRest);
-
-
     if (!inGenerateRest) {
         showLog({
             enabled: isShowLog,
@@ -31,12 +27,11 @@ export const generateRestIfRequested = ({
         data: { toConfigPath, inTargetPath, toPath: restTargetPath }
     });
 
-    console.log("aaaaaaaaaaaa : ", toConfigPath, inTargetPath, restTargetPath);
-
     const response = generateRest({
         toConfigPath,
         inTargetPath,
-        toPath: restTargetPath
+        toPath: restTargetPath,
+        inPort
     });
 
     showLog({

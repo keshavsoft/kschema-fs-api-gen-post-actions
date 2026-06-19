@@ -5,5 +5,6 @@ insertGenPk({
     toPath: process.cwd(),
     toConfigPath: path.join(process.cwd(), "Config", "Schemas", "journals.json"),
     showLog: false,
-    inGenerateRest: true
+    inGenerateRest: true,
+    inPort: "3015"
 });

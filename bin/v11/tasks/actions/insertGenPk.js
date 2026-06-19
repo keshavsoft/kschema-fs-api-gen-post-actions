@@ -8,7 +8,8 @@ import { generateRestIfRequested } from "./InsertGenPk/steps/generateRestIfReque
 import { showLog as writeLog } from "./InsertGenPk/steps/showLog.js";
 
 const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
-    toConfigPath, inTargetPath, inFolderName, inGenerateRest = false, showLog = false
+    toConfigPath, inTargetPath, inFolderName, inGenerateRest = false, showLog = false,
+    inPort
 }) => {
     const cmd = "insertGenPk";
 
@@ -65,7 +66,8 @@ const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
             inTargetPath,
             toPath,
             resolvedFolderName,
-            isShowLog: showLog
+            isShowLog: showLog,
+            inPort
         });
     };
 

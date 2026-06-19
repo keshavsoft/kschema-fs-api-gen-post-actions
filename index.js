@@ -18,7 +18,7 @@ const withMail = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerat
 };
 
 const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath,
-    inGenerateRest }) => {
+    inGenerateRest, inPort }) => {
 
     const commandToSend = "insertGenPk";
 
@@ -27,7 +27,7 @@ const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath,
     await commandFunction({
         toPath, toConfigPath, inTargetPath,
         inFolderName: commandToSend, inGenerateRest,
-        showLog
+        showLog, inPort
     });
 };
 
