@@ -8,7 +8,7 @@ export const generateRestIfRequested = ({
     inTargetPath,
     toPath,
     resolvedFolderName,
-    showLog: isShowLog
+    isShowLog
 }) => {
     if (!inGenerateRest) {
         showLog({

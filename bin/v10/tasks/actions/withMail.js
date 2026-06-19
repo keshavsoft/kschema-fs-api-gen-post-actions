@@ -63,7 +63,7 @@ const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreat
             inTargetPath,
             toPath,
             resolvedFolderName,
-            showLog
+            isShowLog: showLog
         });
     };
 
