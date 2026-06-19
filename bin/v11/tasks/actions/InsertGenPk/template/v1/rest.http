@@ -1,7 +1,8 @@
-
-POST http://localhost:3001/Api/v1/StockItems/WithMail
+POST http://localhost:3000/api/v1/StockItems/withMail
 Content-Type: application/json
 
 {
-      "StockItemName":"Rope 1 kg"
+  "StockItemName": "Item1",
+  "StockGstApplicable": "",
+  "StockBaseUnits": ""
 }

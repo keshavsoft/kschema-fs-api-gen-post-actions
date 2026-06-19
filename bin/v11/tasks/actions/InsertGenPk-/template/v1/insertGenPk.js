@@ -1,6 +1,6 @@
 import insertBase from "./insertBase.js";
-import getData from "./helpers/getData.js";
-import getSchema from "./helpers/getSchema.js";
+import getData from "./getData.js";
+import getSchema from "./getSchema.js";
 import { getPrimaryKey, attachPrimaryKey } from "./helpers/pkHelper.js";
 
 const validateInput = ({ record }) => {
