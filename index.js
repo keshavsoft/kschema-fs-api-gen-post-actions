@@ -17,14 +17,17 @@ const withMail = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerat
     });
 };
 
-const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateRest }) => {
+const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath,
+    inGenerateRest }) => {
+
     const commandToSend = "insertGenPk";
 
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
         toPath, toConfigPath, inTargetPath,
-        inFolderName: commandToSend, inGenerateRest
+        inFolderName: commandToSend, inGenerateRest,
+        showLog
     });
 };
 

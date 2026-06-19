@@ -10,6 +10,10 @@ export const generateRestIfRequested = ({
     resolvedFolderName,
     isShowLog
 }) => {
+
+    console.log("inGenerateRest : ", inGenerateRest);
+
+
     if (!inGenerateRest) {
         showLog({
             enabled: isShowLog,
@@ -26,6 +30,8 @@ export const generateRestIfRequested = ({
         message: "Generating REST files.",
         data: { toConfigPath, inTargetPath, toPath: restTargetPath }
     });
+
+    console.log("aaaaaaaaaaaa : ", toConfigPath, inTargetPath, restTargetPath);
 
     const response = generateRest({
         toConfigPath,
