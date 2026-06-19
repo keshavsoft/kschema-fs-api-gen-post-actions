@@ -7,17 +7,19 @@ import { updateEndPointsJs } from "./InsertGenPk/steps/updateEndPointsJs.js";
 import { generateRestIfRequested } from "./InsertGenPk/steps/generateRestIfRequested.js";
 import { showLog as writeLog } from "./InsertGenPk/steps/showLog.js";
 
-const startFunc = async ({ cmd = "", toPath, isAnnounce = true, checkBeforeCreate = true,
+const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
     toConfigPath, inTargetPath, inFolderName, inGenerateRest = false, showLog = false
 }) => {
+    const cmd = "insertGenPk";
+
     writeLog({
         enabled: showLog,
         message: "Starting WithMail action.",
-        data: { cmd, toPath, inFolderName, inGenerateRest }
+        data: { cmd: inFolderName, toPath, inFolderName, inGenerateRest }
     });
 
     const resolvedFolderName = resolveFolderName({
-        name: cmd
+        name: inFolderName
     });
 
     if (resolvedFolderName.KTF === false) {

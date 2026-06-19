@@ -23,7 +23,7 @@ const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath, inGene
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
-        toPath, cmd: commandToSend, toConfigPath, inTargetPath,
+        toPath, toConfigPath, inTargetPath,
         inFolderName: commandToSend, inGenerateRest
     });
 };
