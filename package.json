@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "kschema-fs-api-gen-rest": "^1.5.4",
-    "express-fix-endpoints-post-js": "^1.2.2"
+    "express-fix-endpoints-post-js": "^1.2.3"
   },
   "type": "module",
   "exports": {
