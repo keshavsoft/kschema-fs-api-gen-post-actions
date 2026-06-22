@@ -42,6 +42,17 @@ const insertAsIs = async ({ toPath, showLog, toConfigPath, inTargetPath, inGener
     });
 };
 
+const filter = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateRest }) => {
+    const commandToSend = "filter";
+
+    const commandFunction = await load(commandToSend);
+    // console.log("  ...args :", args);
+    await commandFunction({
+        toPath, cmd: commandToSend, toConfigPath, inTargetPath,
+        inFolderName: commandToSend, inGenerateRest
+    });
+};
+
 export {
-    withMail, insertGenPk, insertAsIs
+    withMail, insertGenPk, insertAsIs, filter
 };

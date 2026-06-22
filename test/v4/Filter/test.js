@@ -1,7 +1,7 @@
 import path from "path";
-import { insertGenPk } from "../../../index.js";
+import { filter } from "../../../index.js";
 
-insertGenPk({
+filter({
     toPath: process.cwd(),
     toConfigPath: path.join(process.cwd(), "Config", "Schemas", "journals.json"),
     showLog: false,
