@@ -22,7 +22,7 @@ export const updateEndPointsJs = async ({
         showLog: isShowLog,
         inActionName: cmd,
         inFolderName,
-        inGetType: "bodyParse"
+        inGetType: "withMiddleware"
     });
 
     showLog({

@@ -53,6 +53,20 @@ const filter = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateR
     });
 };
 
+const groupBy = async ({ toPath, showLog, toConfigPath, inTargetPath,
+    inGenerateRest, inPort }) => {
+
+    const commandToSend = "groupBy";
+
+    const commandFunction = await load(commandToSend);
+    // console.log("  ...args :", args);
+    await commandFunction({
+        toPath, toConfigPath, inTargetPath,
+        inFolderName: commandToSend, inGenerateRest,
+        showLog, inPort
+    });
+};
+
 export {
-    withMail, insertGenPk, insertAsIs, filter
+    withMail, insertGenPk, insertAsIs, filter, groupBy
 };
