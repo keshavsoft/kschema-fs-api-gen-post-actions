@@ -1,28 +1,26 @@
 # Developer Guide – kschema-fs-api-gen-post-actions
 
-This guide describes the architecture, codebase structure, execution flow, and development workflows for `kschema-fs-api-gen-post-actions`.
+This guide describes the code architecture, library entry point, file structure, and local development/testing workflows for developers contributing to `kschema-fs-api-gen-post-actions`.
 
 ---
 
-## Architecture Overview
+## Library Architecture Overview
 
-The tool is built with a decoupled, configuration-driven layered architecture that supports dynamic version loading and plugin-style extensions.
+The package is a programmatic Node.js ES module that dynamically resolves the active generator tasks from the latest version folder (e.g. `v14`), loading actions dynamically. It does not run via a CLI wrapper.
 
 ```text
-Terminal Input
-      ↓
-[Entry Layer] (bin/cli.js)
-      ↓ Checks latest runtime directory (e.g., v14)
-[Runtime Loader] (bin/core/loadRunner.js)
-      ↓ Dynamic import
-[Runtime Engine] (bin/v14/start.js)
-      ↓ Checks command against actions.json
-[Registry Lookup] (bin/v14/config/actions.json)
-      ↓ Resolves command script
-[Action Task] (bin/v14/tasks/actions/insertAsIs.js)
-      ↓ Executes templates scaffolding & modifies endpoints
-[Integration Layer] (express-fix-endpoints-post-js / kschema-fs-api-gen-rest)
+Programmatic Invocation (index.js)
+             │
+             ├──► Loads getLatestVersion() (resolves e.g. "v14")
+             │
+             ├─► [withMail]    ──► (bin/v14/tasks/actions/withMail.js)
+             ├─► [insertGenPk] ──► (bin/v14/tasks/actions/insertGenPk.js)
+             ├─► [insertAsIs]  ──► (bin/v14/tasks/actions/insertAsIs.js)
+             ├─► [filter]      ──► (bin/v14/tasks/actions/filter.js)
+             └─► [groupBy]     ──► (bin/v14/tasks/actions/groupBy.js)
 ```
+
+Each action module encapsulates its template files, file creation logic, target folder validation, and integration behavior.
 
 ---
 
@@ -31,106 +29,54 @@ Terminal Input
 ```text
 kschema-fs-api-gen-post-actions/
  ├── index.js                      # Programmatic API entrypoint
- ├── package.json                  # Dependencies and binaries mapping
- ├── bin/
- │    ├── cli.js                   # CLI global binary runner
- │    ├── core/
- │    │    ├── getLatestVersion.js # Resolves the highest vXX folder
- │    │    └── loadRunner.js       # Imports/bootstraps start.js of latest version
- │    │
- │    ├── v13/                     # Version 13 runtime (Legacy/Isolated)
- │    │    ├── config/actions.json # Version 13 command registry
- │    │    └── ...
- │    │
- │    └── v14/                     # Active version 14 runtime
- │         ├── config/
- │         │    └── actions.json   # Command registry (JSON-driven)
- │         ├── core/
- │         │    ├── parseInput.js
- │         │    ├── resolveCommand.js
- │         │    └── showUsage.js   # Usage & help screen formatter
- │         │
- │         └── tasks/
- │              ├── common/
- │              └── actions/
- │                   ├── filter.js
- │                   ├── Filter/   # Templates & steps for Filter action
- │                   ├── insertAsIs.js
- │                   ├── InsertAsIs/
- │                   └── ...
- └── test/                         # Harness for local testing
+ ├── package.json                  # ESM package metadata and dependencies
+ └── bin/                          # Code generation execution logic
+      ├── core/
+      │    └── getLatestVersion.js # Checks latest version directory (e.g., v14)
+      └── v14/                     # Active version 14 runtime
+           ├── core/
+           │    └── createFolder.js # Helper utility to copy templates
+           └── tasks/
+                ├── common/
+                │    └── updateEndPointsJs.js
+                └── actions/
+                     ├── filter.js
+                     ├── Filter/   # Scaffolding templates for Filter
+                     ├── insertAsIs.js
+                     ├── InsertAsIs/
+                     ├── insertGenPk.js
+                     ├── InsertGenPk/
+                     ├── withMail.js
+                     ├── WithMail/
+                     ├── groupBy.js
+                     └── groupBy/
 ```
 
 ---
 
-## Key Execution Layers
+## Key Dependencies
 
-### 1. Dynamic Version Detection
-The `bin/cli.js` entry point reads the `bin/` directory, filters folders matching `/^v\d+$/`, sorts them numerically, and loads the start file for the highest version. This guarantees backward compatibility while enabling zero-impact updates.
-
-```javascript
-// bin/core/getLatestVersion.js
-const versions = fs.readdirSync(path.join(__dirname, ".."))
-    .filter(n => /^v\d+$/.test(n))
-    .sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
-
-return versions.at(-1); // returns e.g. "v14"
-```
-
-### 2. Command Registry (`actions.json`)
-Command resolution is entirely decoupled. Commands are mapped to their respective scripts in the version's config file (e.g. `bin/v14/config/actions.json`):
-
-```json
-[
-  {
-    "cmd": "InsertAsIs",
-    "file": "insertAsIs",
-    "exportFile": "InsertAsIs",
-    "description": "Generate InsertAsIs POST action"
-  }
-]
-```
-
-### 3. Modifying Targets (`express-fix-endpoints-post-js`)
-Rather than rewriting route files via regex patterns, action modules use the `express-fix-endpoints-post-js` library to parse, format, and safely inject imports and route handlers into the consumer's `end-points.js` file.
+The generation process delegates core router editing and additional database REST actions to other KeshavSoft utility libraries:
+- **`express-fix-endpoints-post-js`**: Safely parses and injects ES imports and route handlers into the consumer's `end-points.js` file.
+- **`kschema-fs-api-gen-rest`**: Scaffolds full CRUD/REST api schema actions when requested via optional generation flags.
 
 ---
 
-## Adding a New Command
+## Templates & Helpers
 
-To add a new generator action (e.g., `Update` or `Delete`):
-
-1. **Create the Action Task File**:
-   Add `bin/v14/tasks/actions/delete.js` to execute the generation workflow.
-2. **Create Steps & Templates**:
-   Create a folder `bin/v14/tasks/actions/Delete/` containing:
-   - `steps/locateSource.js`, `steps/locateDestination.js`
-   - Scaffolding templates: `controller.js`, `dal.js`, `route.js`, `validation.js`
-3. **Register the Action**:
-   Add the metadata mapping to `bin/v14/config/actions.json`:
-   ```json
-   {
-     "cmd": "Delete",
-     "file": "delete",
-     "exportFile": "Delete",
-     "description": "Generate Delete POST action"
-   }
-   ```
-4. **Expose in Programmatic API** (Optional):
-   Export your action in `index.js` for developers consuming the package programmatically.
+- **Helper Utilities**: Shared functions such as `createFolder` are located in `bin/v14/core/createFolder.js`. Action step files import them using relative paths.
+- **Templates Isolation**: The `template/` folder within each action folder contains the boilerplate structure for the controller, DAL, route validation, and schema definitions that are copied to the destination project.
 
 ---
 
 ## Local Development & Testing
 
-Use the `test/` directory to run actions locally without publishing to NPM.
+Use the `test/` directory to run actions locally:
 
 ```bash
-# Execute local CLI wrapper
-node ./bin/cli.js <Command>
-
-# Run a dedicated test script
-node test/insertAsIs.js
+# Run a specific action test runner
+node test/v4/InsertAsIs/test.js
+node test/v4/groupBy/test.js
 ```
 
-Each test script calls the module's programmatic exports in `index.js` against dummy endpoint files to confirm correct templating and integration.
+Each test script calls the module's programmatic exports in `index.js` against dummy endpoint files to confirm correct templates generation and integration.

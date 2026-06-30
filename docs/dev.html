@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Developer Guide – kschema-fs-api-gen-post-actions</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">🚀 KSchema Actions</a>
+            <ul class="nav-links">
+                <li><a href="index.html">General Usage</a></li>
+                <li><a href="dev.html" class="active">Public Developer Guide</a></li>
+                <li><a href="internal-dev.html">Internal Developer Guide</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>Public Developer <span>Guide</span></h1>
+            <p>Understand the codebase architecture, module directory structure, and local testing model.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Codebase Architecture</h2>
+            <p>The library dynamically resolves active generators from the latest version runtime folder (e.g. <code class="inline">v14</code>) during execution. This allows isolating upgrades safely without breaking older programmatic integrations.</p>
+            <pre><code>Programmatic Invocation (index.js)
+             │
+             ├──► Loads getLatestVersion() (resolves e.g. "v14")
+             │
+             ├─► [withMail]    ──► (bin/v14/tasks/actions/withMail.js)
+             ├─► [insertGenPk] ──► (bin/v14/tasks/actions/insertGenPk.js)
+             ├─► [insertAsIs]  ──► (bin/v14/tasks/actions/insertAsIs.js)
+             ├─► [filter]      ──► (bin/v14/tasks/actions/filter.js)
+             └─► [groupBy]     ──► (bin/v14/tasks/actions/groupBy.js)</code></pre>
+        </section>
+
+        <section>
+            <h2>Directory Structure</h2>
+            <p>Understanding the location of modules, common code templates, and scaffolding scripts:</p>
+            <pre><code>kschema-fs-api-gen-post-actions/
+ ├── index.js                      # Programmatic exports entrypoint
+ ├── package.json                  # Dependencies mapping
+ └── bin/                          
+      ├── core/
+      │    └── getLatestVersion.js # Checks highest version directory (e.g., v14)
+      └── v14/                     
+           ├── core/
+           │    └── createFolder.js # Helper copy utility
+           └── tasks/
+                ├── common/
+                │    └── updateEndPointsJs.js
+                └── actions/
+                     ├── filter.js
+                     ├── Filter/   # Templates folder for Filter
+                     ├── insertAsIs.js
+                     ├── InsertAsIs/
+                     └── ...</code></pre>
+        </section>
+
+        <section>
+            <h2>Important Libraries & Extensions</h2>
+            <p>Our code actions utilize sub-modules to alter routers or generate schema assets:</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>🛠 express-fix-endpoints-post-js</h3>
+                    <p>Parses and safely appends ES imports and middleware handlers directly into the target project's endpoints router.</p>
+                </div>
+                <div class="card">
+                    <h3>📦 kschema-fs-api-gen-rest</h3>
+                    <p>Scaffolds matching database CRUD and REST specification endpoints dynamically when generation options are specified.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Local Testing Harness</h2>
+            <p>Developers can test actions locally against dummy targets inside the <code class="inline">test/</code> directory without publishing updates to the registry:</p>
+            <pre><code># Execute a specific action test wrapper locally
+node test/v4/InsertAsIs/test.js
+node test/v4/groupBy/test.js</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Built with ❤️ by KeshavSoft</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Developer Guide – kschema-fs-api-gen-post-actions</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">🚀 KSchema Actions</a>
+            <ul class="nav-links">
+                <li><a href="index.html">General Usage</a></li>
+                <li><a href="dev.html">Public Developer Guide</a></li>
+                <li><a href="internal-dev.html" class="active">Internal Developer Guide</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>Internal Developer <span>Release Guide</span></h1>
+            <p>Guidelines for automated CI/CD jobs, secret configurations, and release deployments to the NPM registry.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>CI/CD Pipeline Architecture</h2>
+            <p>The repository uses GitHub Actions to automate version checking and package publishing upon commits/pushes to the main branch.</p>
+            <pre><code>Developer pushes to main
+          │
+          ├──► Runs "NPM Version Check" (Informational)
+          │
+          └──► Runs "NPM Publish"
+                   │
+                   ▼ Compares local vs remote
+             Is local version ahead?
+             ├── [Yes] ──► Authenticates with NPM_TOKEN ──► npm publish
+             └── [No]  ──► Skips publish (Graceful exit)</code></pre>
+        </section>
+
+        <section>
+            <h2>Automated Actions (Workflows)</h2>
+            <p>The automated jobs are declared in <code class="inline">.github/workflows/</code>:</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>🔍 NPM Version Check</h3>
+                    <p>Triggered on pull requests and pushes to <code class="inline">main</code>. Resolves version differences, checking if the current local version is ahead, equal, or behind the public registry version.</p>
+                </div>
+                <div class="card">
+                    <h3>🚀 NPM Publish</h3>
+                    <p>Triggered on pushes to <code class="inline">main</code>. If the local version is higher than the current npm registry version, it logs into the registry and runs <code class="inline">npm publish</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Standard Release Procedure</h2>
+            <p>In-house developers can trigger a new release by following these steps:</p>
+            <div class="alert">
+                <h4>🔒 Required Secrets Configuration</h4>
+                <p>Ensure the repository has an repository secret named <strong>`NPM_TOKEN`</strong> configured under <strong>Settings > Secrets and variables > Actions > Secrets</strong> with write/publish permission to npmjs.com.</p>
+            </div>
+            
+            <pre><code># 1. Bump the package version locally (bumps patch/minor/major)
+npm version patch
+
+# 2. Push to remote main with git tags
+git push origin main --tags
+
+# 3. The NPM Publish GitHub Action triggers automatically, checks if the version is ahead, 
+# and deploys the package directly to NPM.</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Built with ❤️ by KeshavSoft</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,65 +1,68 @@
 # kschema-fs-api-gen-post-actions
 
-A configuration-driven scaffolding tool to instantly generate Express.js POST API actions.
+A configuration-driven scaffolding library to instantly generate Express.js POST API actions.
 
 This package automatically generates boilerplate code (controllers, data access layers, routes, and validation schemas) and registers the newly created routes directly into your `end-points.js` file.
+
+> [!NOTE]
+> This package is a **programmatic-only** library. It is designed to be imported and executed inside your scripts, automation tasks, or build pipelines, and does not provide a command-line interface (CLI).
 
 ---
 
 ## Installation
 
-You can install the package globally or run it on-demand using `npx`.
-
-### Global Installation
-
 ```bash
-npm install -g kschema-fs-api-gen-post-actions
-```
-
-### Run with NPX
-
-```bash
-npx kschema-fs-api-gen-post-actions <command>
+npm install kschema-fs-api-gen-post-actions
 ```
 
 ---
 
-## Basic Usage
+## Programmatic API Usage
 
-The CLI operates on your current working directory. Make sure you have an `end-points.js` file in the folder where you run the tool.
-
-```bash
-npx kschema-fs-api-gen-post-actions <Command>
-```
-
-### Available Commands
-
-*   **`WithMail`**: Generates a POST action with email sending logic.
-*   **`InsertGenPk`**: Generates an insert action with an automatically generated primary key.
-*   **`InsertAsIs`**: Generates a standard insert action without primary key changes.
-*   **`Filter`**: Generates a filter/query action.
-*   **`groupBy`**: Generates a database grouping/aggregation action.
-
-For example:
-```bash
-npx kschema-fs-api-gen-post-actions InsertAsIs
-```
-
----
-
-## Programmatic API
-
-You can also use this tool programmatically inside your Node.js scripts:
+Import and call the action generators directly in your scripts:
 
 ```javascript
-import { insertAsIs } from 'kschema-fs-api-gen-post-actions';
+import { 
+  withMail, 
+  insertGenPk, 
+  insertAsIs, 
+  filter, 
+  groupBy 
+} from 'kschema-fs-api-gen-post-actions';
 
+// Example: Generate a standard insert action
 await insertAsIs({
-  toPath: './my-api',
-  inFolderName: 'InsertAsIs',
-  inGenerateRest: false
+  toPath: './src/api',            // Target directory containing your end-points.js
+  inFolderName: 'InsertAsIs',      // Folder name to generate under the target directory
+  inGenerateRest: false           // Whether to generate REST specifications
 });
 ```
+
+### Available Generator Functions
+
+Each function accepts a configuration object containing path specifications and generation options:
+
+1. **`withMail`**: Generates a POST action with email sending logic.
+2. **`insertGenPk`**: Generates an insert action with an automatically generated primary key.
+3. **`insertAsIs`**: Generates a standard insert action without modifying or generating the primary key.
+4. **`filter`**: Generates a filter/query action.
+5. **`groupBy`**: Generates a database grouping/aggregation action.
+
+---
+
+## Output Structure
+
+When any generator function executes successfully, it scaffolds a directory with the following files under your target directory:
+
+```text
+[inFolderName]/
+├── controller.js   # Handles the route request and invokes the DAL
+├── dal.js          # Direct database interaction queries
+├── route.js        # Defines validation middleware and endpoint routing
+└── validation.js   # Validation schemas
+```
+
+Additionally, it dynamically parses and updates your local `end-points.js` file to import the new controller and bind it to the Express router.
 
 ---
 
@@ -73,7 +76,7 @@ This project is set up with GitHub Actions to:
 
 ## Development & Contribution
 
-For detailed developer instructions, architecture layout, test guides, and how to add new generator actions, please read our **[Developer Guide (dev.md)](dev.md)**.
+For detailed developer instructions, architecture layout, and test guides, please read our **[Developer Guide (dev.md)](dev.md)**.
 
 ## License
 
