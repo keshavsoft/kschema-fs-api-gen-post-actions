@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Dependencies – kschema-fs-api-gen-post-actions</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">🚀 KSchema Actions</a>
+            <ul class="nav-links">
+                <li><a href="index.html">General Usage</a></li>
+                <li><a href="dev.html">Public Developer Guide</a></li>
+                <li><a href="internal-dev.html">Internal Developer Guide</a></li>
+                <li><a href="dependencies.html" class="active">Dependencies</a></li>
+                <li><a href="vscode-extension.html">VS Code Extension</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>Core <span>Dependencies</span></h1>
+            <p>Details about the key dependencies and libraries that power this code scaffolding engine.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Overview of Dependencies</h2>
+            <p>The <code class="inline">kschema-fs-api-gen-post-actions</code> package works hand-in-hand with two custom utility libraries developed by KeshavSoft. These dependencies isolate endpoint parsing logic and standard REST API code generation respectively.</p>
+        </section>
+
+        <section>
+            <h2>1. express-fix-endpoints-post-js</h2>
+            <p>This library is responsible for modifying the Express router registration file (typically <code class="inline">end-points.js</code>) whenever a new POST action is created.</p>
+            
+            <div class="alert">
+                <h4>💡 Why not standard AST parsing?</h4>
+                <p>Standard AST (Abstract Syntax Tree) modification tools can be fragile and prone to destroying code styling, formatting, or comments. The <code class="inline">express-fix-endpoints-post-js</code> package is tailored to preserve file structure while reliably appending imports and route registrations.</p>
+            </div>
+
+            <h3>Key Roles & Functions</h3>
+            <ul>
+                <li><strong>ES module import insertion:</strong> Scans the top of <code class="inline">end-points.js</code> and adds the corresponding ES import statement for the newly generated controller.</li>
+                <li><strong>Route attachment:</strong> Locates the router definition (e.g. <code class="inline">router.post(...)</code> or <code class="inline">router.use(...)</code>) and appends the new path handler integration safely.</li>
+                <li><strong>Validation schemas:</strong> Integrates validation middleware into the route structure dynamically.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>2. kschema-fs-api-gen-rest</h2>
+            <p>This library handles generating matching database CRUD and REST specification schemas when the optional <code class="inline">inGenerateRest</code> flag is set to <code class="inline">true</code> during programmatic invocation.</p>
+
+            <pre><code>// Example activation:
+await insertAsIs({
+  toPath: './src/api',
+  inFolderName: 'InsertAsIs',
+  inGenerateRest: true // activates kschema-fs-api-gen-rest integration
+});</code></pre>
+
+            <h3>Key Roles & Functions</h3>
+            <ul>
+                <li><strong>Full CRUD/REST scaffolding:</strong> Builds additional schema definitions to match your post actions.</li>
+                <li><strong>Dynamic mapping:</strong> Coordinates schema structures dynamically with the POST validation engine and DAL layers.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Built with ❤️ by KeshavSoft</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code Extension – kschema-fs-api-gen-post-actions</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">🚀 KSchema Actions</a>
+            <ul class="nav-links">
+                <li><a href="index.html">General Usage</a></li>
+                <li><a href="dev.html">Public Developer Guide</a></li>
+                <li><a href="internal-dev.html">Internal Developer Guide</a></li>
+                <li><a href="dependencies.html">Dependencies</a></li>
+                <li><a href="vscode-extension.html" class="active">VS Code Extension</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>VS Code <span>Extension</span></h1>
+            <p>Integrate action generation directly into your workspace editor via the KeshavSoft VS Code extension.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Overview</h2>
+            <p>To avoid writing manual Node.js scripts for every code generation, you can use the companion VS Code Extension: <code class="inline">vs-code-ext-express-api-gen-post-actions</code>.</p>
+            
+            <div class="alert">
+                <h4>⚡ Visual Scaffolding Interface</h4>
+                <p>The VS Code extension provides interactive sidebar tabs, form sheets, and right-click context menu options to generate files without touching the command line.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Key Features</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>📁 Right-Click Context Menu</h3>
+                    <p>Right-click any folder inside the VS Code explorer tree, select "Generate POST Action", and target that folder immediately as the destination.</p>
+                </div>
+                <div class="card">
+                    <h3>📝 Input Form Validation</h3>
+                    <p>Enter action names, choose generation templates (withMail, insertGenPk, insertAsIs, filter, groupBy), and toggle options visually with immediate path checks.</p>
+                </div>
+                <div class="card">
+                    <h3>⚡ Automatic Endpoint Registration</h3>
+                    <p>Leverages this package's core functions to automatically edit your local <code class="inline">end-points.js</code> file, immediately reloading routes inside your running dev server.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Related Extensions</h2>
+            <p>If you also need to generate GET endpoints, check out the sibling extension:</p>
+            <ul>
+                <li><strong><code class="inline">vs-code-ext-express-api-gen-get-actions</code></strong>: Companion extension for handling GET methods, querying, and schema retrievals.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Built with ❤️ by KeshavSoft</p>
+        </div>
+    </footer>
+</body>
+</html>

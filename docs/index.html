@@ -14,6 +14,8 @@
                 <li><a href="index.html" class="active">General Usage</a></li>
                 <li><a href="dev.html">Public Developer Guide</a></li>
                 <li><a href="internal-dev.html">Internal Developer Guide</a></li>
+                <li><a href="dependencies.html">Dependencies</a></li>
+                <li><a href="vscode-extension.html">VS Code Extension</a></li>
             </ul>
         </div>
     </nav>
@@ -109,6 +111,25 @@ await insertAsIs({
 ├── route.js        # Defines validation middlewares and endpoints routing
 └── validation.js   # Validation schema parameters</code></pre>
             <p>It also dynamically updates the imports and route registration inside your local <code class="inline">end-points.js</code> router file.</p>
+        </section>
+
+        <section>
+            <h2>Further Documentation & Integration</h2>
+            <p>To learn more about how this tool connects to other libraries and editors, explore the following pages:</p>
+            <div class="grid">
+                <a href="dependencies.html" class="card-link" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <h3>🛠 Core Dependencies</h3>
+                        <p>Learn about how this package uses <strong>express-fix-endpoints-post-js</strong> and <strong>kschema-fs-api-gen-rest</strong> under the hood.</p>
+                    </div>
+                </a>
+                <a href="vscode-extension.html" class="card-link" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <h3>⚡ VS Code Extension</h3>
+                        <p>Discover the official KeshavSoft VS Code extension designed to visually scaffold POST actions directly inside your editor.</p>
+                    </div>
+                </a>
+            </div>
         </section>
     </main>
 

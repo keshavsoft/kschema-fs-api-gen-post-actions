@@ -66,17 +66,20 @@ Additionally, it dynamically parses and updates your local `end-points.js` file 
 
 ---
 
-## CI/CD Pipeline
+## Documentation & Development
 
-This project is set up with GitHub Actions to:
-- Automatically check version differences between local `package.json` and the NPM registry.
-- Publish updates automatically to NPM whenever the local version is bumped higher than the published version.
+For detailed instructions, architecture layouts, and workflows, refer to the following resources:
 
----
+### Markdown Guides
+- **[Developer Guide](dev.md)**: Details on package architecture, file layout, and testing.
+- **[CI/CD & NPM Publishing Guide](internal-dev.md)**: Detailed release procedures and GitHub Actions workflow documentation.
 
-## Development & Contribution
-
-For detailed developer instructions, architecture layout, and test guides, please read our **[Developer Guide (dev.md)](dev.md)**.
+### HTML Documentation
+- **[Documentation Home (index.html)](docs/index.html)**: Styled general usage guide.
+- **[Developer Guide (HTML)](docs/dev.html)**: Styled developer reference.
+- **[CI/CD & Publishing Guide (HTML)](docs/internal-dev.html)**: Styled release reference.
+- **[Dependencies Guide (HTML)](docs/dependencies.html)**: Details on the custom helper libraries used.
+- **[VS Code Extension (HTML)](docs/vscode-extension.html)**: Companion editor extension details.
 
 ## License
 
