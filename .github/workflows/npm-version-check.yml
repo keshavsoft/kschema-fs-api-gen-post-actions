@@ -1,0 +1,74 @@
+name: NPM Version Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Compare version with NPM
+        id: compare
+        run: |
+          node -e '
+            const fs = require("fs");
+            const { execSync } = require("child_process");
+
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            const name = pkg.name;
+            const local = pkg.version;
+
+            let remote = "0.0.0";
+            try {
+              remote = execSync(`npm view ${name} version`, { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+            } catch (err) {
+              console.log(`Could not find package ${name} on npm. Defaulting remote to 0.0.0.`);
+            }
+
+            function compare(a, b) {
+              const pa = a.split(".");
+              const pb = b.split(".");
+              for (let i = 0; i < 3; i++) {
+                const na = Number(pa[i] || 0);
+                const nb = Number(pb[i] || 0);
+                if (na > nb) return 1;
+                if (na < nb) return -1;
+              }
+              const aHasTag = a.includes("-");
+              const bHasTag = b.includes("-");
+              if (!aHasTag && bHasTag) return 1;
+              if (aHasTag && !bHasTag) return -1;
+              if (aHasTag && bHasTag) {
+                const tagA = a.split("-")[1];
+                const tagB = b.split("-")[1];
+                return tagA.localeCompare(tagB, undefined, { numeric: true, sensitivity: "base" });
+              }
+              return 0;
+            }
+
+            const res = compare(local, remote);
+            let status = "equal";
+            if (res > 0) status = "ahead";
+            if (res < 0) status = "behind";
+
+            console.log(`Package: ${name}`);
+            console.log(`Local Version (Repository): ${local}`);
+            console.log(`Remote Version (NPM): ${remote}`);
+            console.log(`Status: Local is ${status.toUpperCase()} remote.`);
+
+            if (process.env.GITHUB_OUTPUT) {
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${status}\nlocal=${local}\nremote=${remote}\n`);
+            }
+          '
