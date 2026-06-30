@@ -1,323 +1,80 @@
-# @keshavsoft/kschema-api-gen-actions
+# kschema-fs-api-gen-post-actions
 
-> Generate Express.js API action boilerplate instantly.
+A configuration-driven scaffolding tool to instantly generate Express.js POST API actions.
 
-A lightweight developer-first CLI that scaffolds API action modules for Express.js applications with automatic route registration and structured architecture.
-
----
-
-# Features
-
-- ⚡ Generate API actions in seconds
-- 📁 Auto-create folders and files
-- 🛣 Auto-register routes in `end-points.js`
-- 🧠 Convention-based code generation
-- 🔥 Minimal setup
-- 📦 ESM-first architecture
-- 🚀 Optimized for rapid backend development
-- 🧩 Scalable folder structure
+This package automatically generates boilerplate code (controllers, data access layers, routes, and validation schemas) and registers the newly created routes directly into your `end-points.js` file.
 
 ---
 
-# Installation
+## Installation
 
-## Global Installation
+You can install the package globally or run it on-demand using `npx`.
+
+### Global Installation
 
 ```bash
-npm install -g @keshavsoft/kschema-api-gen-actions
+npm install -g kschema-fs-api-gen-post-actions
 ```
 
----
-
-## Using NPX
+### Run with NPX
 
 ```bash
-npx @keshavsoft/kschema-api-gen-actions
+npx kschema-fs-api-gen-post-actions <command>
 ```
 
 ---
 
-# Quick Start
+## Basic Usage
 
-Assume your current project contains:
-
-```txt
-end-points.js
-```
-
-Example:
-
-```js
-import express from 'express';
-
-const tableName = "journals";
-
-const router = express.Router();
-
-export { router };
-```
-
----
-
-# Generate ShowAll Action
+The CLI operates on your current working directory. Make sure you have an `end-points.js` file in the folder where you run the tool.
 
 ```bash
-npx kschema-api-gen ShowAll
+npx kschema-fs-api-gen-post-actions <Command>
 ```
 
-Generated:
+### Available Commands
 
-```txt
-ShowAll/
-├── controller.js
-├── dal.js
-├── route.js
-└── validation.js
-```
+*   **`WithMail`**: Generates a POST action with email sending logic.
+*   **`InsertGenPk`**: Generates an insert action with an automatically generated primary key.
+*   **`InsertAsIs`**: Generates a standard insert action without primary key changes.
+*   **`Filter`**: Generates a filter/query action.
+*   **`groupBy`**: Generates a database grouping/aggregation action.
 
-And updates:
-
-```js
-import { getFunc } from "./ShowAll/controller.js";
-
-router.get('/ShowAll', (req, res) =>
-    getFunc({
-        res,
-        inTableName: tableName
-    })
-);
-```
-
----
-
-# Generate Insert Action
-
+For example:
 ```bash
-npx kschema-api-gen Insert
-```
-
-Generated:
-
-```txt
-Insert/
-├── controller.js
-├── dal.js
-├── route.js
-└── validation.js
-```
-
-And updates:
-
-```js
-import { postFunc } from "./Insert/controller.js";
-
-router.post('/Insert', express.json(), (req, res) =>
-    postFunc({
-        req,
-        res,
-        inTableName: tableName
-    })
-);
+npx kschema-fs-api-gen-post-actions InsertAsIs
 ```
 
 ---
 
-# Final Result Example
+## Programmatic API
 
-```txt
-project/
-├── end-points.js
-├── Insert/
-│   ├── controller.js
-│   ├── dal.js
-│   ├── route.js
-│   └── validation.js
-│
-├── ShowAll/
-│   ├── controller.js
-│   ├── dal.js
-│   ├── route.js
-│   └── validation.js
+You can also use this tool programmatically inside your Node.js scripts:
+
+```javascript
+import { insertAsIs } from 'kschema-fs-api-gen-post-actions';
+
+await insertAsIs({
+  toPath: './my-api',
+  inFolderName: 'InsertAsIs',
+  inGenerateRest: false
+});
 ```
 
 ---
 
-# CLI Usage
+## CI/CD Pipeline
 
-```bash
-npx kschema-api-gen <ActionName>
-```
-
----
-
-# Supported Actions
-
-| Action | Method | Description |
-|---|---|---|
-| ShowAll | GET | Fetch all records |
-| Insert | POST | Insert new record |
+This project is set up with GitHub Actions to:
+- Automatically check version differences between local `package.json` and the NPM registry.
+- Publish updates automatically to NPM whenever the local version is bumped higher than the published version.
 
 ---
 
-# Example Workflow
+## Development & Contribution
 
-## Step 1
+For detailed developer instructions, architecture layout, test guides, and how to add new generator actions, please read our **[Developer Guide (dev.md)](dev.md)**.
 
-Create route container:
+## License
 
-```js
-import express from 'express';
-
-const tableName = "journals";
-
-const router = express.Router();
-
-export { router };
-```
-
----
-
-## Step 2
-
-Run:
-
-```bash
-npx kschema-api-gen ShowAll
-```
-
----
-
-## Step 3
-
-Run:
-
-```bash
-npx kschema-api-gen Insert
-```
-
----
-
-## Step 4
-
-Your routes become:
-
-```js
-import express from 'express';
-
-import { postFunc } from "./Insert/controller.js";
-import { getFunc } from "./ShowAll/controller.js";
-
-const tableName = "journals";
-
-const router = express.Router();
-
-router.get('/ShowAll', (req, res) =>
-    getFunc({
-        res,
-        inTableName: tableName
-    })
-);
-
-router.post('/Insert', express.json(), (req, res) =>
-    postFunc({
-        req,
-        res,
-        inTableName: tableName
-    })
-);
-
-export { router };
-```
-
----
-
-# Philosophy
-
-This package is designed around:
-
-- Convention over configuration
-- Fast backend development
-- Predictable architecture
-- Reduced boilerplate
-- Clean scalable Express.js APIs
-
----
-
-# Tech Stack
-
-- Node.js
-- Express.js
-- JavaScript
-- ESM Modules
-
----
-
-# Local Development
-
-Clone repository:
-
-```bash
-git clone <repo-url>
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run locally:
-
-```bash
-node ./bin/cli.js ShowAll
-```
-
----
-
-# Package Structure
-
-```txt
-bin/
-├── cli.js
-├── v11/
-│   ├── commands/
-│   ├── core/
-│   └── tasks/
-```
-
----
-
-# Roadmap
-
-- [ ] Update action generation
-- [ ] Delete action generation
-- [ ] Validation schema generation
-- [ ] TypeScript support
-- [ ] Swagger/OpenAPI support
-- [ ] Prisma templates
-- [ ] Sequelize templates
-- [ ] MongoDB templates
-- [ ] Custom middleware generation
-
----
-
-this is config driven
-
-# Contributing
-
-Pull requests are welcome.
-
-For major changes, please open an issue first to discuss proposed improvements.
-
----
-
-# License
-
-MIT
-
----
-
-# Author
-
-Created by KeshavSoft.
-
+[MIT](LICENSE)

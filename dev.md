@@ -1,504 +1,136 @@
-# Development Guide
+# Developer Guide – kschema-fs-api-gen-post-actions
 
-This document explains the internal architecture and development workflow of `@keshavsoft/kschema-api-gen-actions`.
-
----
-
-# Introduction
-
-`@keshavsoft/kschema-api-gen-actions` is a modular CLI execution framework designed around scalable command orchestration and isolated runtime execution.
-
-The architecture focuses on:
-
-* dynamic command loading
-* version isolation
-* configuration-driven execution
-* reusable workflows
-* scalable action registration
-
-The goal is to allow new features to be added without rewriting the execution engine.
+This guide describes the architecture, codebase structure, execution flow, and development workflows for `kschema-fs-api-gen-post-actions`.
 
 ---
 
-# High Level Architecture
+## Architecture Overview
 
-Execution pipeline:
+The tool is built with a decoupled, configuration-driven layered architecture that supports dynamic version loading and plugin-style extensions.
 
 ```text
-cli.js
-    ↓
-loadRunner.js
-    ↓
-version runtime
-    ↓
-start.js
-    ↓
-loadCommand.js
-    ↓
-actions.json
-    ↓
-dynamic import
-    ↓
-task execution
-```
-
-Each layer has a dedicated responsibility.
-
----
-
-# Folder Structure
-
-```text
-bin/
- ├── cli.js
- │
- ├── core/
- │    ├── getLatestVersion.js
- │    └── loadRunner.js
- │
- └── v18/
-      ├── config/
-      │    └── actions.json
-      │
-      ├── core/
-      │    ├── loadCommand.js
-      │    └── start.js
-      │
-      └── tasks/
-           └── actions/
-                ├── showAll.js
-                ├── insert.js
-                └── update.js
-
-index.js
-
-test/
- ├── showAll.js
- ├── insert.js
- └── update.js
+Terminal Input
+      ↓
+[Entry Layer] (bin/cli.js)
+      ↓ Checks latest runtime directory (e.g., v14)
+[Runtime Loader] (bin/core/loadRunner.js)
+      ↓ Dynamic import
+[Runtime Engine] (bin/v14/start.js)
+      ↓ Checks command against actions.json
+[Registry Lookup] (bin/v14/config/actions.json)
+      ↓ Resolves command script
+[Action Task] (bin/v14/tasks/actions/insertAsIs.js)
+      ↓ Executes templates scaffolding & modifies endpoints
+[Integration Layer] (express-fix-endpoints-post-js / kschema-fs-api-gen-rest)
 ```
 
 ---
 
-# Entry Layer
-
-## cli.js
-
-Location:
+## Directory Structure
 
 ```text
-bin/cli.js
+kschema-fs-api-gen-post-actions/
+ ├── index.js                      # Programmatic API entrypoint
+ ├── package.json                  # Dependencies and binaries mapping
+ ├── bin/
+ │    ├── cli.js                   # CLI global binary runner
+ │    ├── core/
+ │    │    ├── getLatestVersion.js # Resolves the highest vXX folder
+ │    │    └── loadRunner.js       # Imports/bootstraps start.js of latest version
+ │    │
+ │    ├── v13/                     # Version 13 runtime (Legacy/Isolated)
+ │    │    ├── config/actions.json # Version 13 command registry
+ │    │    └── ...
+ │    │
+ │    └── v14/                     # Active version 14 runtime
+ │         ├── config/
+ │         │    └── actions.json   # Command registry (JSON-driven)
+ │         ├── core/
+ │         │    ├── parseInput.js
+ │         │    ├── resolveCommand.js
+ │         │    └── showUsage.js   # Usage & help screen formatter
+ │         │
+ │         └── tasks/
+ │              ├── common/
+ │              └── actions/
+ │                   ├── filter.js
+ │                   ├── Filter/   # Templates & steps for Filter action
+ │                   ├── insertAsIs.js
+ │                   ├── InsertAsIs/
+ │                   └── ...
+ └── test/                         # Harness for local testing
 ```
-
-Responsibilities:
-
-* detect latest runtime version
-* load runtime dynamically
-* execute startup flow
-
-Example:
-
-```js
-const version = getLatestVersion();
-
-const runner = await loadRunner(version);
-
-await runner();
-```
-
-The entry layer intentionally stays lightweight.
 
 ---
 
-# Runtime Loader
+## Key Execution Layers
 
-## loadRunner.js
+### 1. Dynamic Version Detection
+The `bin/cli.js` entry point reads the `bin/` directory, filters folders matching `/^v\d+$/`, sorts them numerically, and loads the start file for the highest version. This guarantees backward compatibility while enabling zero-impact updates.
 
-Location:
+```javascript
+// bin/core/getLatestVersion.js
+const versions = fs.readdirSync(path.join(__dirname, ".."))
+    .filter(n => /^v\d+$/.test(n))
+    .sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
 
-```text
-bin/core/loadRunner.js
+return versions.at(-1); // returns e.g. "v14"
 ```
 
-Purpose:
-
-Load runtime dynamically based on version.
-
-Example:
-
-```js
-await import(`../${version}/start.js`);
-```
-
-Benefits:
-
-* version isolation
-* backward compatibility
-* safe runtime upgrades
-* independent evolution
-
----
-
-# Runtime Engine
-
-## start.js
-
-Location:
-
-```text
-bin/v18/core/start.js
-```
-
-Responsibilities:
-
-* parse CLI arguments
-* validate command input
-* resolve executable action
-* execute workflow
-
-Execution flow:
-
-```text
-parse input
-    ↓
-load command
-    ↓
-load action
-    ↓
-execute action
-```
-
-This layer acts as orchestration middleware.
-
----
-
-# Configuration Layer
-
-## actions.json
-
-Location:
-
-```text
-bin/v18/config/actions.json
-```
-
-This file acts as command metadata registry.
-
-Example:
+### 2. Command Registry (`actions.json`)
+Command resolution is entirely decoupled. Commands are mapped to their respective scripts in the version's config file (e.g. `bin/v14/config/actions.json`):
 
 ```json
-{
-    "showAll": {
-        "file": "showAll.js"
-    }
-}
+[
+  {
+    "cmd": "InsertAsIs",
+    "file": "insertAsIs",
+    "exportFile": "InsertAsIs",
+    "description": "Generate InsertAsIs POST action"
+  }
+]
 ```
 
-Meaning:
-
-```text
-showAll command
-    ↓
-maps to
-    ↓
-showAll.js
-```
-
-Benefits:
-
-* centralized command registration
-* scalable configuration
-* no hardcoded routing
-* cleaner architecture
+### 3. Modifying Targets (`express-fix-endpoints-post-js`)
+Rather than rewriting route files via regex patterns, action modules use the `express-fix-endpoints-post-js` library to parse, format, and safely inject imports and route handlers into the consumer's `end-points.js` file.
 
 ---
 
-# Command Loader
+## Adding a New Command
 
-## loadCommand.js
+To add a new generator action (e.g., `Update` or `Delete`):
 
-Location:
-
-```text
-bin/v18/core/loadCommand.js
-```
-
-Purpose:
-
-Convert command names into executable modules.
-
-Example flow:
-
-```text
-command name
-    ↓
-lookup actions.json
-    ↓
-resolve file
-    ↓
-dynamic import
-    ↓
-return executable module
-```
-
-Example:
-
-```js
-await import(`../tasks/actions/${file}`);
-```
-
-This creates a plugin-style execution system.
+1. **Create the Action Task File**:
+   Add `bin/v14/tasks/actions/delete.js` to execute the generation workflow.
+2. **Create Steps & Templates**:
+   Create a folder `bin/v14/tasks/actions/Delete/` containing:
+   - `steps/locateSource.js`, `steps/locateDestination.js`
+   - Scaffolding templates: `controller.js`, `dal.js`, `route.js`, `validation.js`
+3. **Register the Action**:
+   Add the metadata mapping to `bin/v14/config/actions.json`:
+   ```json
+   {
+     "cmd": "Delete",
+     "file": "delete",
+     "exportFile": "Delete",
+     "description": "Generate Delete POST action"
+   }
+   ```
+4. **Expose in Programmatic API** (Optional):
+   Export your action in `index.js` for developers consuming the package programmatically.
 
 ---
 
-# Task Layer
+## Local Development & Testing
 
-Location:
-
-```text
-bin/v18/tasks/actions/
-```
-
-This layer contains actual business execution.
-
-Examples:
-
-```text
-showAll.js
-insert.js
-update.js
-```
-
-Each action is isolated.
-
-Benefits:
-
-* easier debugging
-* reusable workflows
-* cleaner scaling
-* safer refactoring
-
----
-
-# API Layer
-
-## index.js
-
-Location:
-
-```text
-index.js
-```
-
-Purpose:
-
-Expose programmable API access.
-
-Example:
-
-```js
-import api from "@keshavsoft/kschema-api-gen-actions";
-```
-
-This allows commands to be consumed programmatically outside CLI execution.
-
----
-
-# Test Architecture
-
-## test/
-
-Location:
-
-```text
-test/
-```
-
-The `test` folder is not simple unit testing.
-
-It acts as:
-
-* isolated runtime validation
-* local development harness
-* programmable action execution
-* architecture verification
-
-Example:
-
-```text
-test/showAll.js
-```
-
-Typical flow:
-
-```text
-test/showAll.js
-    ↓
-imports from index.js
-    ↓
-index.js loads runtime
-    ↓
-loadCommand.js resolves action
-    ↓
-actions.json maps metadata
-    ↓
-tasks/actions/showAll.js executes
-```
-
-This allows direct testing without npm publishing.
-
----
-
-# Example Test File
-
-```js
-import api from "../index.js";
-
-await api({
-    command: "showAll",
-    toPath: process.cwd()
-});
-```
-
-Run locally:
+Use the `test/` directory to run actions locally without publishing to NPM.
 
 ```bash
-node test/showAll.js
+# Execute local CLI wrapper
+node ./bin/cli.js <Command>
+
+# Run a dedicated test script
+node test/insertAsIs.js
 ```
 
----
-
-# Dynamic Import Strategy
-
-Dynamic imports are a major architectural decision.
-
-Example:
-
-```js
-await import(path);
-```
-
-Benefits:
-
-* lazy loading
-* lower startup cost
-* plugin-style scalability
-* isolated execution
-* runtime flexibility
-
-Only required modules load during execution.
-
----
-
-# Version Isolation
-
-The architecture supports isolated runtimes.
-
-Example:
-
-```text
-v16/
-v17/
-v18/
-```
-
-Benefits:
-
-* safer upgrades
-* runtime stability
-* controlled migration
-* backward compatibility
-
-Each runtime behaves independently.
-
----
-
-# Scalability Model
-
-Adding a new command typically requires:
-
-1. Create action file
-2. Register in `actions.json`
-3. Create optional test file
-4. Execute locally
-
-Core engine remains unchanged.
-
-This is a strong scalability characteristic.
-
----
-
-# Architectural Strengths
-
-## Modular
-
-Every layer has isolated responsibility.
-
----
-
-## Extensible
-
-New commands integrate easily.
-
----
-
-## Config Driven
-
-Behavior is registry-based.
-
----
-
-## Runtime Safe
-
-Versions remain isolated.
-
----
-
-## Developer Friendly
-
-Test folder enables rapid local execution.
-
----
-
-# Philosophy
-
-```text
-Small focused modules scale better than large intelligent files.
-```
-
-The architecture prioritizes:
-
-* modularity
-* clarity
-* scalability
-* isolated execution
-* maintainable workflows
-
----
-
-# Future Direction
-
-Possible future evolution:
-
-* plugin ecosystem
-* generator marketplace
-* schema-driven workflows
-* runtime extensions
-* interactive CLI prompts
-* scaffolding presets
-
-The current structure already supports long-term growth.
-
----
-
-# Conclusion
-
-`@keshavsoft/kschema-api-gen-actions` demonstrates how a simple CLI utility can evolve into a scalable developer platform using:
-
-* layered architecture
-* dynamic runtime loading
-* configuration-driven execution
-* isolated task workflows
-* modular command orchestration
-
-The codebase is intentionally designed for maintainability, scalability, and controlled runtime evolution.
+Each test script calls the module's programmatic exports in `index.js` against dummy endpoint files to confirm correct templating and integration.
