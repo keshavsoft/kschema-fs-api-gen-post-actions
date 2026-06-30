@@ -3,7 +3,6 @@
   "version": "1.15.1",
   "description": "start from end points js, generate post methods",
   "keywords": [
-    "cli",
     "scaffold",
     "templates",
     "node",
@@ -16,9 +15,6 @@
   "type": "module",
   "exports": {
     ".": "./index.js"
-  },
-  "bin": {
-    "kschema-fs-api-gen-post-actions": "./bin/cli.js"
   },
   "files": [
     "bin/",
