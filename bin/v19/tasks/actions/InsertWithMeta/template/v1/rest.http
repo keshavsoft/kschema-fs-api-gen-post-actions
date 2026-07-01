@@ -1,0 +1,8 @@
+POST http://localhost:9011/api/v5/BillsTable/insertGenPk
+Content-Type: application/json
+
+{
+  "LedgerName": "k1",
+  "InvoiceDate": "",
+  "PartyGSTIN": ""
+}

@@ -69,6 +69,21 @@ const groupBy = async ({ toPath, showLog, toConfigPath, inTargetPath,
     });
 };
 
+const insertWithMeta = async ({ toPath, showLog, toConfigPath, inTargetPath,
+    inGenerateRest, inPort, inFolderName }) => {
+
+    const commandToSend = "insertWithMeta";
+
+    const commandFunction = await load(commandToSend);
+    // console.log("  ...args :", args);
+    await commandFunction({
+        toPath, toConfigPath, inTargetPath,
+        inFolderName: commandToSend, inGenerateRest,
+        showLog, inPort, inFolderName
+    });
+};
+
 export {
-    withMail, insertGenPk, insertAsIs, filter, groupBy
+    withMail, insertGenPk, insertAsIs, filter, groupBy,
+    insertWithMeta
 };
