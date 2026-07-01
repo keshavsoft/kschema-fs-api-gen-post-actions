@@ -1,0 +1,32 @@
+[
+  {
+    "cmd": "WithMail",
+    "file": "withMail",
+    "exportFile": "WithMail",
+    "description": "Generate WithMail POST action"
+  },
+  {
+    "cmd": "InsertGenPk",
+    "file": "insertGenPk",
+    "exportFile": "InsertGenPk",
+    "description": "Generate InsertGenPk POST action"
+  },
+  {
+    "cmd": "InsertAsIs",
+    "file": "insertAsIs",
+    "exportFile": "InsertAsIs",
+    "description": "Generate InsertAsIs POST action"
+  },
+  {
+    "cmd": "Filter",
+    "file": "filter",
+    "exportFile": "Filter",
+    "description": "Generate Filter POST action"
+  },
+  {
+    "cmd": "groupBy",
+    "file": "groupBy",
+    "exportFile": "groupBy",
+    "description": "Generate groupBy POST action"
+  }
+]
