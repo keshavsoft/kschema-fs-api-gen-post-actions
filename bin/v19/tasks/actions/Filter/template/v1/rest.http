@@ -1,0 +1,7 @@
+POST http://localhost:3025/api/v1/StockItems/insertGenPk
+Content-Type: application/json
+
+{
+  "StockBaseUnits": "Mts",
+   "sgstRate": " 2.50"
+}

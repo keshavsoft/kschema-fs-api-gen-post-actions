@@ -1,0 +1,6 @@
+POST http://localhost:9011/api/v3/ItemsTable/groupBy/ParentPk
+content-type: application/json
+
+{
+    "Amount": "count"
+}
