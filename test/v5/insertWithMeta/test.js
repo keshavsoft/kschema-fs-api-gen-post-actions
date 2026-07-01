@@ -1,7 +1,7 @@
 import path from "path";
-import { insertGenPk } from "../../../index.js";
+import { insertWithMeta } from "../../../index.js";
 
-insertGenPk({
+insertWithMeta({
     toPath: process.cwd(),
     inTargetPath: process.cwd(),
     showLog: false,

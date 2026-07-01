@@ -11,7 +11,6 @@ import { showLog as writeLog } from "./showLog.js";
 
 export const startFuncCommon = async ({
     cmd,
-    inDefaultFolderName,
     toPath,
     isAnnounce = true,
     checkBeforeCreate = true,
@@ -21,6 +20,8 @@ export const startFuncCommon = async ({
     showLog = false,
     inPort
 }) => {
+    const localFolderName = inFolderName;
+
     const configPath = getFromEndPointsJsFile({ toPath });
     const configFullPath = path.join(inTargetPath, "/", configPath);
 
@@ -31,27 +32,10 @@ export const startFuncCommon = async ({
         data: { cmd: inFolderName, toPath, inFolderName, inGenerateRest }
     });
 
-    const resolvedFolderName = resolveFolderName({
-        name: inFolderName,
-        inDefaultFolderName
-    });
+    const source = locateSource({ inActionFolderName: cmd });
 
-    if (resolvedFolderName.KTF === false) {
-        writeLog({
-            cmd,
-            enabled: showLog,
-            message: "Folder name validation failed.",
-            data: resolvedFolderName
-        });
-
-        console.log(resolvedFolderName.KReason);
-
-        return;
-    };
-
-    const source = locateSource({ inActionFolderName: inDefaultFolderName });
     const destination = locateDestination({
-        inResolvedFolderName: resolvedFolderName,
+        inResolvedFolderName: inFolderName,
         toPath
     });
 
@@ -80,20 +64,20 @@ export const startFuncCommon = async ({
             toConfigPath: configFullPath,
             inTargetPath,
             toPath,
-            resolvedFolderName,
+            resolvedFolderName: localFolderName,
             isShowLog: showLog,
             inPort
         });
     };
 
-    if (isAnnounce) announce({ inResolvedFolderName: resolvedFolderName });
+    if (isAnnounce) announce({ inResolvedFolderName: localFolderName });
 
     writeLog({
         cmd,
         enabled: showLog,
         message: "Action completed.",
-        data: { resolvedFolderName }
+        data: { resolvedFolderName: localFolderName }
     });
 
-    return resolvedFolderName;
+    return localFolderName;
 };
