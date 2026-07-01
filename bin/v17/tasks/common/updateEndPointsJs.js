@@ -17,12 +17,14 @@ export const updateEndPointsJs = async ({
         data: { endPointsJsPath, cmd, inFolderName }
     });
 
+    const inGetType = (cmd === "groupBy") ? "withMiddleware" : "bodyParse";
+
     const response = await fixEndpointsJs({
         endPointsJsPath,
         showLog: isShowLog,
         inActionName: cmd,
         inFolderName,
-        inGetType: "withMiddleware"
+        inGetType
     });
 
     showLog({

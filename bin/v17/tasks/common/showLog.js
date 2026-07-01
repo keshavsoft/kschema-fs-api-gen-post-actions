@@ -1,7 +1,8 @@
 export const showLog = ({ enabled, message, data, cmd }) => {
     if (!enabled) return;
 
-    console.log(`[${cmd}] ${message}`);
+    const prefix = cmd ? `[${cmd}]` : "[withMail]";
+    console.log(`${prefix} ${message}`);
 
     if (data === undefined) return;
 

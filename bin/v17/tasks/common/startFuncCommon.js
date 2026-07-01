@@ -1,8 +1,17 @@
 import path from "path";
 import { getFromEndPointsJsFile } from "./getFromEndPointsJsFile.js";
+import { locateSource } from "./locateSource.js";
+import { locateDestination } from "./locateDestination.js";
+import { announce } from "./announce.js";
+import resolveFolderName from "./resolveFolderName.js";
+import { createActionFolder } from "./createActionFolder.js";
+import { updateEndPointsJs } from "./updateEndPointsJs.js";
+import { generateRestIfRequested } from "./generateRestIfRequested.js";
+import { showLog as writeLog } from "./showLog.js";
 
 export const startFuncCommon = async ({
     cmd,
+    inDefaultFolderName,
     toPath,
     isAnnounce = true,
     checkBeforeCreate = true,
@@ -10,31 +19,26 @@ export const startFuncCommon = async ({
     inFolderName,
     inGenerateRest = false,
     showLog = false,
-    inPort,
-    locateSource,
-    locateDestination,
-    announce,
-    resolveFolderName,
-    createActionFolder,
-    updateEndPointsJs,
-    generateRestIfRequested,
-    writeLog
+    inPort
 }) => {
     const configPath = getFromEndPointsJsFile({ toPath });
     const configFullPath = path.join(toPath, "/", configPath);
 
     writeLog({
+        cmd,
         enabled: showLog,
-        message: "Starting WithMail action.",
+        message: "Starting action.",
         data: { cmd: inFolderName, toPath, inFolderName, inGenerateRest }
     });
 
     const resolvedFolderName = resolveFolderName({
-        name: inFolderName
+        name: inFolderName,
+        inDefaultFolderName
     });
 
     if (resolvedFolderName.KTF === false) {
         writeLog({
+            cmd,
             enabled: showLog,
             message: "Folder name validation failed.",
             data: resolvedFolderName
@@ -45,13 +49,14 @@ export const startFuncCommon = async ({
         return;
     };
 
-    const source = locateSource();
+    const source = locateSource({ inActionFolderName: inDefaultFolderName });
     const destination = locateDestination({
         inResolvedFolderName: resolvedFolderName,
         toPath
     });
 
     writeLog({
+        cmd,
         enabled: showLog,
         message: "Resolved source and destination.",
         data: { source, destination }
@@ -84,8 +89,9 @@ export const startFuncCommon = async ({
     if (isAnnounce) announce({ inResolvedFolderName: resolvedFolderName });
 
     writeLog({
+        cmd,
         enabled: showLog,
-        message: "WithMail action completed.",
+        message: "Action completed.",
         data: { resolvedFolderName }
     });
 
