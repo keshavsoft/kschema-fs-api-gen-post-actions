@@ -22,7 +22,7 @@ export const startFuncCommon = async ({
     inPort
 }) => {
     const configPath = getFromEndPointsJsFile({ toPath });
-    const configFullPath = path.join(toPath, "/", configPath);
+    const configFullPath = path.join(inTargetPath, "/", configPath);
 
     writeLog({
         cmd,
