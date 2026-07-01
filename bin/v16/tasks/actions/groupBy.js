@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 
 import { locateSource } from "./groupBy/steps/locateSource.js";
@@ -9,13 +10,22 @@ import { updateEndPointsJs } from "../common/updateEndPointsJs.js";
 import { generateRestIfRequested } from "./groupBy/steps/generateRestIfRequested.js";
 import { showLog as writeLog } from "./groupBy/steps/showLog.js";
 
+const getFromEndPointsJsFile = ({ toPath }) => {
+    const endPointsFilePath = path.join(toPath, "end-points.js");
+    const endPointsContent = fs.readFileSync(endPointsFilePath, "utf8");
+    const configPathLine = endPointsContent.split(/\r?\n/)[4];
+    const configPath = configPathLine.match(/configPath\s*=\s*["']([^"']+)["']/)[1];
+
+    return configPath;
+};
+
 const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
-    toConfigPath, inTargetPath, inFolderName, inGenerateRest = false, showLog = false,
+    inTargetPath, inFolderName, inGenerateRest = false, showLog = false,
     inPort
 }) => {
     const cmd = "groupBy";
-    const configPath = path.join(toPath, "end-points.js");
-    console.log("aaaaaaaaaaa : ", toPath, toConfigPath, inTargetPath, inFolderName);
+    const configPath = getFromEndPointsJsFile({ toPath });
+    const configFullPath = path.join(toPath, "/", configPath);
 
     writeLog({
         enabled: showLog,
@@ -56,6 +66,7 @@ const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
         isAnnounce, checkBeforeCreate, showLog
     });
 
+    // if (false) {
     if (createFolderResponse.KTF) {
         await updateEndPointsJs({
             toPath,
@@ -66,7 +77,7 @@ const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
 
         generateRestIfRequested({
             inGenerateRest,
-            toConfigPath,
+            toConfigPath: configFullPath,
             inTargetPath,
             toPath,
             resolvedFolderName,
