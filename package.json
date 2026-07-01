@@ -1,6 +1,6 @@
 {
   "name": "kschema-fs-api-gen-post-actions",
-  "version": "1.17.1",
+  "version": "1.17.2",
   "description": "start from end points js, generate post methods",
   "keywords": [
     "scaffold",
@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "kschema-fs-api-gen-rest": "^1.8.6",
-    "express-fix-endpoints-post-js": "^1.3.3"
+    "express-fix-endpoints-post-js": "^1.3.4"
   },
   "type": "module",
   "exports": {
