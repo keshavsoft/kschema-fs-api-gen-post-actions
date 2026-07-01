@@ -1,3 +1,5 @@
+import path from "path";
+
 import { locateSource } from "./groupBy/steps/locateSource.js";
 import { locateDestination } from "./groupBy/steps/locateDestination.js";
 import { announce } from "./groupBy/steps/announce.js";
@@ -12,6 +14,8 @@ const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
     inPort
 }) => {
     const cmd = "groupBy";
+    const configPath = path.join(toPath, "end-points.js");
+    console.log("aaaaaaaaaaa : ", toPath, toConfigPath, inTargetPath, inFolderName);
 
     writeLog({
         enabled: showLog,
