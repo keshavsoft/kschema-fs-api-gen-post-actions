@@ -1,6 +1,6 @@
 {
   "name": "kschema-fs-api-gen-post-actions",
-  "version": "1.19.5",
+  "version": "1.19.6",
   "description": "start from end points js, generate post methods",
   "keywords": [
     "scaffold",
