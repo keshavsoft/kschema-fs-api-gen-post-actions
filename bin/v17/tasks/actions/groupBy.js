@@ -1,4 +1,3 @@
-import fs from "fs";
 import path from "path";
 
 import { locateSource } from "./groupBy/steps/locateSource.js";
@@ -9,15 +8,7 @@ import { createActionFolder } from "./groupBy/steps/createActionFolder.js";
 import { updateEndPointsJs } from "../common/updateEndPointsJs.js";
 import { generateRestIfRequested } from "./groupBy/steps/generateRestIfRequested.js";
 import { showLog as writeLog } from "./groupBy/steps/showLog.js";
-
-const getFromEndPointsJsFile = ({ toPath }) => {
-    const endPointsFilePath = path.join(toPath, "end-points.js");
-    const endPointsContent = fs.readFileSync(endPointsFilePath, "utf8");
-    const configPathLine = endPointsContent.split(/\r?\n/)[4];
-    const configPath = configPathLine.match(/configPath\s*=\s*["']([^"']+)["']/)[1];
-
-    return configPath;
-};
+import { getFromEndPointsJsFile } from "./groupBy/steps/getFromEndPointsJsFile.js";
 
 const startFunc = async ({ toPath, isAnnounce = true, checkBeforeCreate = true,
     inTargetPath, inFolderName, inGenerateRest = false, showLog = false,
