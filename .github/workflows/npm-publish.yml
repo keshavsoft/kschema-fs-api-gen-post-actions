@@ -7,18 +7,49 @@ on:
   repository_dispatch:
     types: [publish-success]
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure Git
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update Dependency
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            pkg.dependencies["kschema-fs-api-gen-rest"] = "^${{ github.event.client_payload.version }}";
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
+          '
+
+      - name: Bump Version
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          npm version patch -m "chore(deps): bump kschema-fs-api-gen-rest to ${{ github.event.client_payload.version }} [skip ci]"
+
+      - name: Push version bump
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          git push origin HEAD:main --follow-tags
 
       - name: Check if local version is later than NPM
         id: check
@@ -72,7 +103,7 @@ jobs:
           '
 
       - name: Publish to NPM
-        if: steps.check.outputs.is_later == 'true'
+        if: steps.check.outputs.is_later == 'true' || github.event_name == 'repository_dispatch'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
