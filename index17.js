@@ -18,7 +18,7 @@ const withMail = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerat
 };
 
 const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath,
-    inGenerateRest, inPort, inFolderName }) => {
+    inGenerateRest, inPort }) => {
 
     const commandToSend = "insertGenPk";
 
@@ -27,7 +27,7 @@ const insertGenPk = async ({ toPath, showLog, toConfigPath, inTargetPath,
     await commandFunction({
         toPath, toConfigPath, inTargetPath,
         inFolderName: commandToSend, inGenerateRest,
-        showLog, inPort, inFolderName
+        showLog, inPort
     });
 };
 
@@ -42,21 +42,19 @@ const insertAsIs = async ({ toPath, showLog, toConfigPath, inTargetPath, inGener
     });
 };
 
-const filter = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateRest,
-    inFolderName
-}) => {
+const filter = async ({ toPath, showLog, toConfigPath, inTargetPath, inGenerateRest }) => {
     const commandToSend = "filter";
 
     const commandFunction = await load(commandToSend);
     // console.log("  ...args :", args);
     await commandFunction({
         toPath, cmd: commandToSend, toConfigPath, inTargetPath,
-        inFolderName: commandToSend, inGenerateRest, inFolderName
+        inFolderName: commandToSend, inGenerateRest
     });
 };
 
 const groupBy = async ({ toPath, showLog, toConfigPath, inTargetPath,
-    inGenerateRest, inPort, inFolderName }) => {
+    inGenerateRest, inPort }) => {
 
     const commandToSend = "groupBy";
 
@@ -65,7 +63,7 @@ const groupBy = async ({ toPath, showLog, toConfigPath, inTargetPath,
     await commandFunction({
         toPath, toConfigPath, inTargetPath,
         inFolderName: commandToSend, inGenerateRest,
-        showLog, inPort, inFolderName
+        showLog, inPort
     });
 };
 
