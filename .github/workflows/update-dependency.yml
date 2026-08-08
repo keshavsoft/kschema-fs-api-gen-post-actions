@@ -79,18 +79,32 @@ jobs:
       - name: Wait for NPM registry replication
         run: sleep 15
 
-      - name: Notify vs-code-ext-express-api-gen-post-actions
+      - name: Notify Dependent Repositories
         run: |
-          curl -i -X POST \
+          echo "### 🔔 Dependency Notification Status" >> $GITHUB_STEP_SUMMARY
+
+          RESPONSE1=$(curl -s -w "%{http_code}" -o resp1.json -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.REPO_DISPATCH_TOKEN }}" \
             https://api.github.com/repos/keshavsoft/vs-code-ext-express-api-gen-post-actions/dispatches \
-            -d '{"event_type":"parent_package_updated","client_payload":{"parent_version":"${{ steps.version.outputs.VERSION }}"}}'
+            -d '{"event_type":"parent_package_updated","client_payload":{"parent_version":"${{ steps.version.outputs.VERSION }}"}}')
 
-      - name: Notify vs-code-ext-from-any-js
-        run: |
-          curl -i -X POST \
+          if [ "$RESPONSE1" = "204" ]; then
+            echo "* **[keshavsoft/vs-code-ext-express-api-gen-post-actions](https://github.com/keshavsoft/vs-code-ext-express-api-gen-post-actions/actions)**: ✅ Dispatched successfully (HTTP 204)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "* **[keshavsoft/vs-code-ext-express-api-gen-post-actions](https://github.com/keshavsoft/vs-code-ext-express-api-gen-post-actions/actions)**: ❌ Failed to dispatch (HTTP $RESPONSE1)" >> $GITHUB_STEP_SUMMARY
+            cat resp1.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+          RESPONSE2=$(curl -s -w "%{http_code}" -o resp2.json -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.REPO_DISPATCH_TOKEN }}" \
             https://api.github.com/repos/keshavsoft/vs-code-ext-from-any-js/dispatches \
-            -d '{"event_type":"dependency-updated","client_payload":{"package":"kschema-fs-api-gen-post-actions"}}'
+            -d '{"event_type":"dependency-updated","client_payload":{"package":"kschema-fs-api-gen-post-actions"}}')
+
+          if [ "$RESPONSE2" = "204" ]; then
+            echo "* **[keshavsoft/vs-code-ext-from-any-js](https://github.com/keshavsoft/vs-code-ext-from-any-js/actions)**: ✅ Dispatched successfully (HTTP 204)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "* **[keshavsoft/vs-code-ext-from-any-js](https://github.com/keshavsoft/vs-code-ext-from-any-js/actions)**: ❌ Failed to dispatch (HTTP $RESPONSE2)" >> $GITHUB_STEP_SUMMARY
+            cat resp2.json >> $GITHUB_STEP_SUMMARY
+          fi
