@@ -9,6 +9,7 @@ import { generateRestIfRequested } from "./generateRestIfRequested.js";
 import { showLog as writeLog } from "./showLog.js";
 
 export const startFuncCommon = async ({
+    knowledgeKey,
     cmd,
     toPath,
     isAnnounce = true,
@@ -24,25 +25,11 @@ export const startFuncCommon = async ({
     const configPath = getFromEndPointsJsFile({ toPath });
     const configFullPath = path.join(inTargetPath, "/", configPath);
 
-    writeLog({
-        cmd,
-        enabled: showLog,
-        message: "Starting action.",
-        data: { cmd: inFolderName, toPath, inFolderName, inGenerateRest }
-    });
-
     const source = locateSource({ inActionFolderName: cmd });
 
     const destination = locateDestination({
         inResolvedFolderName: inFolderName,
         toPath
-    });
-
-    writeLog({
-        cmd,
-        enabled: showLog,
-        message: "Resolved source and destination.",
-        data: { source, destination }
     });
 
     const createFolderResponse = createActionFolder({
@@ -53,7 +40,7 @@ export const startFuncCommon = async ({
     if (createFolderResponse.KTF) {
         await updateEndPointsJs({
             toPath,
-            cmd,
+            cmd: knowledgeKey,
             inFolderName,
             showLog
         });
@@ -68,15 +55,6 @@ export const startFuncCommon = async ({
             inPort
         });
     };
-
-    if (isAnnounce) announce({ inResolvedFolderName: localFolderName });
-
-    writeLog({
-        cmd,
-        enabled: showLog,
-        message: "Action completed.",
-        data: { resolvedFolderName: localFolderName }
-    });
 
     return localFolderName;
 };
