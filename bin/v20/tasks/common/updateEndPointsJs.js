@@ -1,5 +1,6 @@
 import path from "path";
-import fixEndpointsJs from "express-fix-endpoints-post-js";
+// import fixEndpointsJs from "express-fix-endpoints-post-js";
+import fixAnyJs from "express-fix-any-js";
 import { showLog } from "./showLog.js";
 
 export const updateEndPointsJs = async ({
@@ -19,12 +20,18 @@ export const updateEndPointsJs = async ({
 
     const inGetType = (cmd === "groupBy") ? "withMiddleware" : "bodyParse";
 
-    const response = await fixEndpointsJs({
-        endPointsJsPath,
-        showLog: isShowLog,
-        inActionName: cmd,
-        inFolderName,
-        inGetType
+    // const response = await fixEndpointsJs({
+    //     endPointsJsPath,
+    //     showLog: isShowLog,
+    //     inActionName: cmd,
+    //     inFolderName,
+    //     inGetType
+    // });
+
+    const response = fixAnyJs({
+        inFileType: cmd,
+        inTargetPath: toPath,
+        inValue: inFolderName, OutValue: inFolderName
     });
 
     showLog({

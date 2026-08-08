@@ -3,7 +3,6 @@ import { getFromEndPointsJsFile } from "./getFromEndPointsJsFile.js";
 import { locateSource } from "./locateSource.js";
 import { locateDestination } from "./locateDestination.js";
 import { announce } from "./announce.js";
-import resolveFolderName from "./resolveFolderName.js";
 import { createActionFolder } from "./createActionFolder.js";
 import { updateEndPointsJs } from "./updateEndPointsJs.js";
 import { generateRestIfRequested } from "./generateRestIfRequested.js";
